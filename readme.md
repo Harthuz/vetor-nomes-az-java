@@ -1,28 +1,224 @@
-# EXERCÍCIO 1 — Estrutura de nomes (vetor + lista duplamente encadeada)
+# 📚 Estrutura de Dados — Lista de Nomes (Vetor + Lista Duplamente Encadeada)
 
-1. O vetor `No[] vetor = new No[26]` representa as letras A-Z.
-   - Cada posição aponta para o início de uma lista ligada.
+## 🔹 Visão Geral
 
-2. A função `indice(nome)`:
-   - Pega a primeira letra do nome.
-   - Converte para maiúscula.
-   - Subtrai 'A' → gera índice de 0 a 25.
+Esta estrutura organiza nomes de forma eficiente combinando:
 
-3. Ao adicionar:
-   - Calcula o índice correto (letra inicial).
-   - Se a lista estiver vazia → insere direto.
-   - Caso contrário → percorre a lista.
+- **Vetor de 26 posições** → separa os nomes pela letra inicial (A-Z)
+- **Lista duplamente encadeada** → mantém os nomes **ordenados alfabeticamente**
 
-4. Inserção ordenada:
-   - Compara nomes usando `compareTo`.
-   - Decide se insere antes ou depois do nó atual.
-   - Ajusta ponteiros `ant` e `prox`.
+✔ Resultado:
+- Inserção automática em ordem
+- Busca mais rápida (não percorre tudo)
+- Estrutura dinâmica (sem tamanho fixo por letra)
 
-5. Pesquisa:
-   - Vai direto na lista correta pelo índice.
-   - Percorre até encontrar ou acabar.
+---
 
-6. Remoção:
-   - Procura o nó.
-   - Ajusta os ponteiros vizinhos.
-   - Mantém a lista consistente (sem quebrar encadeamento).
+## 🔹 Estrutura Interna
+
+### 📌 Classe `No`
+
+Representa um elemento da lista:
+
+```java
+class No {
+    String nome;
+    No ant, prox;
+}
+````
+
+* `nome` → valor armazenado
+* `ant` → aponta para o anterior
+* `prox` → aponta para o próximo
+
+✔ Permite navegação bidirecional
+
+---
+
+### 📌 Vetor principal
+
+```java
+No[] listaPorLetra = new No[26];
+```
+
+Cada posição representa uma letra:
+
+| Índice | Letra |
+| ------ | ----- |
+| 0      | A     |
+| 1      | B     |
+| ...    | ...   |
+| 25     | Z     |
+
+✔ Cada posição aponta para o início de uma lista
+
+---
+
+## 🔹 Funcionamento dos Métodos
+
+---
+
+### 🔸 `indice(String nome)`
+
+```java
+return Character.toUpperCase(nome.charAt(0)) - 'A';
+```
+
+Transforma a primeira letra em índice:
+
+* 'A' → 0
+* 'B' → 1
+* 'Z' → 25
+
+✔ Define onde o nome será armazenado
+
+---
+
+### 🔸 `adicionar(String nome)`
+
+Responsável por inserir mantendo ordem alfabética.
+
+#### Fluxo:
+
+1. Descobre índice da letra
+2. Verifica se lista está vazia
+3. Percorre até achar posição correta
+4. Insere ajustando ponteiros
+
+#### Regras:
+
+* Se menor que o primeiro → vira cabeça
+* Se maior → entra no meio ou final
+
+✔ A lista sempre fica ordenada automaticamente
+
+---
+
+### 🔸 `pesquisar(String nome)`
+
+#### Fluxo:
+
+1. Acessa lista correta
+2. Percorre elemento por elemento
+3. Compara nomes
+
+✔ Retorna:
+
+* `true` → encontrado
+* `false` → não encontrado
+
+---
+
+### 🔸 `excluir(String nome)`
+
+Remove um nome sem quebrar a lista.
+
+#### Casos:
+
+* **Meio da lista**
+
+  ```java
+  atual.ant.prox = atual.prox;
+  ```
+
+* **Primeiro elemento**
+
+  ```java
+  listaPorLetra[i] = atual.prox;
+  ```
+
+* **Ajuste do próximo**
+
+  ```java
+  atual.prox.ant = atual.ant;
+  ```
+
+✔ Mantém integridade da estrutura
+
+---
+
+### 🔸 `renomear(String antigo, String novo)`
+
+```java
+excluir(antigo);
+adicionar(novo);
+```
+
+✔ Remove e reinsere corretamente
+
+✔ Garante:
+
+* Ordem alfabética
+* Mudança de letra se necessário
+
+---
+
+### 🔸 `estaVazia()`
+
+```java
+return total == 0;
+```
+
+✔ Estrutura vazia quando não há nomes
+
+---
+
+### 🔸 `quantidade()`
+
+✔ Retorna total de nomes armazenados
+
+---
+
+### 🔸 `exibirTudo()`
+
+Percorre todo o vetor e imprime apenas listas com dados.
+
+#### Exemplo de saída:
+
+```
+A -> Aline <-> Amanda <-> Ana
+B -> Beatriz <-> Bia
+C -> Carlos <-> Cesar
+Z -> Zuleica
+```
+
+✔ Mostra organização por letra + ordem
+
+---
+
+## 🔹 Complexidade
+
+| Operação | Complexidade     |
+| -------- | ---------------- |
+| Inserção | O(n) (por lista) |
+| Busca    | O(n) (por lista) |
+| Remoção  | O(n)             |
+| Índice   | O(1)             |
+
+✔ Melhor que lista única global
+
+---
+
+## 🔹 Vantagens
+
+* Organização automática
+* Redução do espaço de busca
+* Estrutura flexível
+* Inserção ordenada sem reprocessamento
+
+---
+
+## 🔹 Limitações
+
+* Não trata nomes inválidos (ex: "123")
+* Pode ter listas muito grandes em letras comuns (ex: "A")
+
+---
+
+## 🔹 Resumo Final
+
+✔ Vetor → decide **onde**
+✔ Lista → mantém **ordem**
+✔ Nó → conecta elementos
+
+Essa combinação é uma forma simples de **hash + lista encadeada ordenada**
