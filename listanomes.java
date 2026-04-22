@@ -1,5 +1,3 @@
-// EXERCÍCIO 1
-
 class No {
     String nome;
     No ant, prox;
@@ -10,35 +8,35 @@ class No {
 }
 
 class EstruturaNomes {
-    No[] vetor = new No[26]; // índice A-Z
+    No[] listaPorLetra = new No[26]; // vetor A-Z
+    int total = 0;
 
     int indice(String nome) {
-        return Character.toUpperCase(nome.charAt(0)) - 'A'; // calcula posição
+        return Character.toUpperCase(nome.charAt(0)) - 'A'; // calcula índice
     }
 
     void adicionar(String nome) {
         int i = indice(nome);
         No novo = new No(nome);
 
-        if (vetor[i] == null) { // lista vazia
-            vetor[i] = novo;
+        if (listaPorLetra[i] == null) {
+            listaPorLetra[i] = novo;
+            total++;
             return;
         }
 
-        No atual = vetor[i];
+        No atual = listaPorLetra[i];
 
-        // inserção ordenada
-        while (atual != null && atual.nome.compareTo(nome) < 0) {
-            if (atual.prox == null) break;
+        while (atual.prox != null && atual.prox.nome.compareToIgnoreCase(nome) < 0) {
             atual = atual.prox;
         }
 
-        if (atual.nome.compareTo(nome) > 0) { // inserir antes
+        if (atual.nome.compareToIgnoreCase(nome) > 0) { // inserir antes
             novo.prox = atual;
             novo.ant = atual.ant;
 
             if (atual.ant != null) atual.ant.prox = novo;
-            else vetor[i] = novo;
+            else listaPorLetra[i] = novo;
 
             atual.ant = novo;
         } else { // inserir depois
@@ -48,32 +46,57 @@ class EstruturaNomes {
             if (atual.prox != null) atual.prox.ant = novo;
             atual.prox = novo;
         }
+
+        total++;
     }
 
     boolean pesquisar(String nome) {
         int i = indice(nome);
-        No atual = vetor[i];
+        No atual = listaPorLetra[i];
 
         while (atual != null) {
-            if (atual.nome.equals(nome)) return true;
+            if (atual.nome.equalsIgnoreCase(nome)) return true;
             atual = atual.prox;
         }
         return false;
     }
 
-    void remover(String nome) {
+    boolean excluir(String nome) {
         int i = indice(nome);
-        No atual = vetor[i];
+        No atual = listaPorLetra[i];
 
         while (atual != null) {
-            if (atual.nome.equals(nome)) {
-                if (atual.ant != null) atual.ant.prox = atual.prox;
-                else vetor[i] = atual.prox;
+            if (atual.nome.equalsIgnoreCase(nome)) {
 
-                if (atual.prox != null) atual.prox.ant = atual.ant;
-                return;
+                if (atual.ant != null)
+                    atual.ant.prox = atual.prox;
+                else
+                    listaPorLetra[i] = atual.prox;
+
+                if (atual.prox != null)
+                    atual.prox.ant = atual.ant;
+
+                total--;
+                return true;
             }
             atual = atual.prox;
         }
+        return false;
+    }
+
+    boolean renomear(String antigo, String novo) {
+        if (!pesquisar(antigo)) return false;
+
+        excluir(antigo);
+        adicionar(novo); // reinsere ordenado
+        return true;
+    }
+
+    boolean estaVazia() {
+        return total == 0; // controla estado geral
+    }
+
+    int quantidade() {
+        return total;
     }
 }

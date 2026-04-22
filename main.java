@@ -5,7 +5,7 @@ public class main {
         EstruturaNomes estrutura = new EstruturaNomes();
 
         // adicionando nomes
-        estrutura.adicionar("Ana");
+        estrutura.adicionar("ana");
         estrutura.adicionar("Carlos");
         estrutura.adicionar("Amanda");
         estrutura.adicionar("Beatriz");
